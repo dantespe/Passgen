@@ -32,6 +32,7 @@ class Passgen {
 public:
     Passgen();
     Passgen(int length_in, bool numbers_in, bool spc_in);
+    Passgen(int length_in, int count_in, bool numbers_in, bool spc_in);
     void write_passwords();
     int pass_to_write;
     void set_length(int l);

@@ -12,7 +12,13 @@ Passgen::Passgen(int length_in, bool numbers_in, bool spc_in) :
      if (length <= 0) {
         length = DEFAULT_PASSWORD_LENGTH;
      }
- }
+}
+
+Passgen::Passgen(int length_in, int count_in, bool numbers_in, bool spc_in) :
+    length(length_in), numbers(numbers_in),
+    special_characters(spc_in), pass_to_write(count_in ){
+    if (length <= 0) length = 1;
+}
 
 void Passgen::update_chars() {
     //Adding Upper Case
