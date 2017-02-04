@@ -7,16 +7,9 @@ Passgen::Passgen() {
     pass_to_write = DEFAULT_PASS_TO_WRITE;
 }
 
-Passgen::Passgen(int length_in, bool numbers_in, bool spc_in) :
- length(length_in), numbers(numbers_in), special_characters(spc_in) {
-     if (length <= 0) {
-        length = DEFAULT_PASSWORD_LENGTH;
-     }
-}
-
 Passgen::Passgen(int length_in, int count_in, bool numbers_in, bool spc_in) :
     length(length_in), numbers(numbers_in),
-    special_characters(spc_in), pass_to_write(count_in ){
+    special_characters(spc_in), pass_to_write(count_in){
     if (length <= 0) length = 1;
 }
 
@@ -35,7 +28,7 @@ void Passgen::update_chars() {
    }
 
    if (special_characters) {
-       //Makes sense if you check ASCII TABLE
+       //Makes sense if you check an ASCII TABLE
        for (int i = 33; i < 48; ++i)
            append_to_chars(i);
 
@@ -69,20 +62,6 @@ void Passgen::write_passwords() {
     write_passwords(pass_to_write);
 }
 
-
 void Passgen::append_to_chars(int add) {
     acceptable_chars.push_back(add);
-}
-
-void Passgen::set_length(int l) {
-    if (l > 1)
-        length = l;
-    else
-        l = 1;
-}
-void Passgen::set_numbers(bool n) {
-    numbers = n;
-}
-void Passgen::set_spc(bool s) {
-    special_characters = s;
 }

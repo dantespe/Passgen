@@ -12,8 +12,8 @@ const bool INCLUDE_NUMEBRS_DEFAULT = true;
 const bool INCLUDE_SYMBOLS_DEFAULT = true;
 const int PASSWORD_DEFAULT_LENGTH = 128;
 const int PASSWORDS_TO_WRITE = 1;
-const char *VERBOSE =
-    "Usage: Passgen\n [count] [length]"
+const string VERBOSE =
+    "Usage: Passgen [count] [length]\n"
     "-b           A basic password with letters and numbers.\n"
     "-c           The number of passwords to generate.\n"
     "-i           Open Passgen in interactive mode.\n"
@@ -22,33 +22,34 @@ const char *VERBOSE =
     "-s           Include symbols in generated passwords.\n";
 
 bool yes_or_no_to_bool(char i) {
-    if (i == 'y' || i == 'Y')
-        return true;
+    if (i == 'y' || i == 'Y') return true;
     return false;
 }
 
 void interactive(Passgen & passgen) {
-    int x; char y;
+    int count, length; bool numbers, symbols; char y;
+
     cout << "How many passwords should I write: ";
-    cin >> x;
-    passgen.pass_to_write = x;
+    cin >> count;
 
     cout << "How long should each password be: ";
-    cin >> x;
-    passgen.set_length(x);
+    cin >> length;
 
     cout << "Should I include numbers [Y/n]: ";
     cin >> y;
-    passgen.set_numbers(yes_or_no_to_bool(y));
+    numbers = yes_or_no_to_bool(y);
 
     cout << "Should I include symbols [Y/n]: ";
     cin >> y;
-    passgen.set_spc(yes_or_no_to_bool(y));
+    symbols = yes_or_no_to_bool(y);
+    Passgen temp(length, count, numbers, symbols);
+    passgen = temp;
     return;
 }
 
 void print_computation(bool def, int count, int length,
   bool numbers, bool symbols) {
+    cout << "===========================\n";
     if (def)
         cout << "USING DEFAULT SETTINGS:\n";
 
@@ -67,7 +68,7 @@ void print_computation(bool def, int count, int length,
 void read_flags(int argc, char * argv[], int & count,
     int & length, bool & numbers, bool & symbols, int & output) {
     int flag;
-    while ((flag = getopt(argc, argv, "binsc:l:")) != EOF) {
+    while ((flag = getopt(argc, argv, "bhinsc:l:")) != EOF) {
         switch (flag) {
             case 'b':
                 numbers = true;
@@ -86,8 +87,9 @@ void read_flags(int argc, char * argv[], int & count,
             case 's':
                 symbols = true;
                 break;
-            case '?':
-                cout << *VERBOSE << endl;
+            default:
+                cout << VERBOSE << endl;
+                exit(1);
                 break;
         }
         if (flag == 'i') {
@@ -115,7 +117,7 @@ int main(int argc, char * argv[]) {
     }
 
     //Passgen [count] [length]
-    if (argc == 3 && !atoi(argv[1]) && !atoi(argv[2])) {
+    if (argc == 3 && atoi(argv[1]) && atoi(argv[2])) {
         num_passwords_to_write = atoi(argv[1]);
         password_length = atoi(argv[2]);
         advanced = true;
@@ -128,7 +130,12 @@ int main(int argc, char * argv[]) {
     Passgen passgen(password_length, num_passwords_to_write,
         numbers, symbols);
 
-    if (flag == 'i') interactive(passgen);
+    if (flag == 'i') {
+        interactive(passgen);
+        passgen.write_passwords();
+        return 0;
+    }
+
     print_computation(false, num_passwords_to_write, password_length,
         numbers, symbols);
     passgen.write_passwords();
