@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <cstdlib>
 #include <unistd.h>
+#include <ctype.h>
 using namespace std;
 
 const bool INCLUDE_NUMEBRS_DEFAULT = true;
@@ -13,6 +14,7 @@ const int PASSWORD_DEFAULT_LENGTH = 128;
 const int PASSWORDS_TO_WRITE = 1;
 const char *VERBOSE =
     "Usage: Passgen\n [count] [length]"
+    "-b           A basic password with letters and numbers.\n"
     "-c           The number of passwords to generate.\n"
     "-i           Open Passgen in interactive mode.\n"
     "-l           Length of the generated password.\n"
@@ -65,8 +67,12 @@ void print_computation(bool def, int count, int length,
 void read_flags(int argc, char * argv[], int & count,
     int & length, bool & numbers, bool & symbols, int & output) {
     int flag;
-    while ((flag = getopt(argc, argv, "insc:l:")) != EOF) {
+    while ((flag = getopt(argc, argv, "binsc:l:")) != EOF) {
         switch (flag) {
+            case 'b':
+                numbers = true;
+                symbols = false;
+                break;
             case 'c':
                 count = atoi(optarg); break;
             case 'i':
@@ -108,7 +114,8 @@ int main(int argc, char * argv[]) {
       return 0;
     }
 
-    if (argc == 3) {
+    //Passgen [count] [length]
+    if (argc == 3 && !atoi(argv[1]) && !atoi(argv[2])) {
         num_passwords_to_write = atoi(argv[1]);
         password_length = atoi(argv[2]);
         advanced = true;
