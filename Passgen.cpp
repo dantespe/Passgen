@@ -41,7 +41,14 @@ void Passgen::update_chars() {
 }
 
 int get_random_int() {
-    return rand();
+    int iters = rand() % 15;
+    int salt(1), base(1);
+    for (int i = 0; i < iters; ++i) {
+        salt = rand() * rand();
+        base *= salt;
+        base /= (iters + 1);
+    }
+    return abs(base*base);
 }
 
 void Passgen::write_passwords(int num_passwords) {

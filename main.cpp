@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <cstdlib>
 #include <unistd.h>
-#include <ctype.h>
 using namespace std;
 
 const bool INCLUDE_NUMEBRS_DEFAULT = true;
@@ -21,30 +20,10 @@ const string VERBOSE =
     "-n           Include numbers in generated passwords.\n"
     "-s           Include symbols in generated passwords.\n";
 
+
 bool yes_or_no_to_bool(char i) {
     if (i == 'y' || i == 'Y') return true;
     return false;
-}
-
-void interactive(Passgen & passgen) {
-    int count, length; bool numbers, symbols; char y;
-
-    cout << "How many passwords should I write: ";
-    cin >> count;
-
-    cout << "How long should each password be: ";
-    cin >> length;
-
-    cout << "Should I include numbers [Y/n]: ";
-    cin >> y;
-    numbers = yes_or_no_to_bool(y);
-
-    cout << "Should I include symbols [Y/n]: ";
-    cin >> y;
-    symbols = yes_or_no_to_bool(y);
-    Passgen temp(length, count, numbers, symbols);
-    passgen = temp;
-    return;
 }
 
 void print_computation(bool def, int count, int length,
@@ -63,6 +42,33 @@ void print_computation(bool def, int count, int length,
         cout << "Excluding Symbols\n";
 
     cout << "===========================\n";
+}
+
+void interactive() {
+    /***
+        Prompts users for input, generates passwords, then exits(0).
+    ***/
+    int count, length; bool numbers, symbols; char y;
+
+    cout << "How many passwords should I write: ";
+    cin >> count;
+
+    cout << "How long should each password be: ";
+    cin >> length;
+
+    cout << "Should I include numbers [Y/n]: ";
+    cin >> y;
+    numbers = yes_or_no_to_bool(y);
+
+    cout << "Should I include symbols [Y/n]: ";
+    cin >> y;
+    symbols = yes_or_no_to_bool(y);
+
+    Passgen passgen(length, count, numbers, symbols);
+    print_computation(false, count, length, numbers, symbols);
+    passgen.write_passwords();
+    exit(0);
+    return;
 }
 
 void read_flags(int argc, char * argv[], int & count,
@@ -127,15 +133,11 @@ int main(int argc, char * argv[]) {
         read_flags(argc, argv, num_passwords_to_write, password_length,
          numbers, symbols, flag);
 
+    if (flag == 'i')
+        interactive();
+
     Passgen passgen(password_length, num_passwords_to_write,
         numbers, symbols);
-
-    if (flag == 'i') {
-        interactive(passgen);
-        passgen.write_passwords();
-        return 0;
-    }
-
     print_computation(false, num_passwords_to_write, password_length,
         numbers, symbols);
     passgen.write_passwords();
