@@ -1,8 +1,8 @@
 # Passgen: Password Generator
 Passgen is a basic password generator that attempts
-to create random passwords to the user's specification.
-As is, Passgen, is not ready for full production or important passwords. I will work to remove `rand()` in favor for something that is more secure. A temporary fix would be to add the Passgen.exe to your $PATH that way the you are not reseeding.  
-
+to create random passwords to the user's specification. You can add the `Passgen`
+exe file to your path (i.e. `/usr/local/bin`) so that you can use it as a command line tool.
+NOTE: Passgen does NOT use rand() for random number generation.
 
 ## Basic Usage:
 Compiling the code:
