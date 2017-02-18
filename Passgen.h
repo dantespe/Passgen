@@ -31,7 +31,8 @@ const int NUMBERS_END_ASCII = 58;
 class Passgen {
 public:
     Passgen();
-    Passgen(int length_in, int count_in, bool numbers_in, bool spc_in);
+    Passgen(int length_in, int count_in,
+            bool numbers_in, bool spc_in);
     void write_passwords();
 
 private:
@@ -40,7 +41,8 @@ private:
     bool numbers; //where it has [0-9]
     bool special_characters; //@ , ./ > etc
     int pass_to_write;
-    std::vector<int> acceptable_chars; //A vector of all the ascii numbers in the set of chars
+    //A vector of all the ascii numbers in the set of chars
+    std::vector<int> acceptable_chars;
     void update_chars();
     void append_to_chars(int add);
     void write_passwords(int num_passwords);

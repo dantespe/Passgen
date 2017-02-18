@@ -40,15 +40,11 @@ void Passgen::update_chars() {
    }
 }
 
-int get_random_int() {
-    int iters = rand() % 15;
-    int salt(1), base(1);
-    for (int i = 0; i < iters; ++i) {
-        salt = rand() * rand();
-        base *= salt;
-        base /= (iters + 1);
-    }
-    return abs(base*base);
+int get_random_int(int size) {
+    std::mt19937 random_gen;
+    random_gen.seed(std::random_device()());
+    std::uniform_int_distribution<std::mt19937::result_type> dist(0, size - 1);
+    return int(dist(random_gen));
 }
 
 void Passgen::write_passwords(int num_passwords) {
@@ -57,7 +53,7 @@ void Passgen::write_passwords(int num_passwords) {
     if (num_passwords <= 0) return;
     for (int i = 0; i < length; ++i) {
         //gets a random index
-        unsigned index = get_random_int() % size;
+        unsigned index = get_random_int(size);
         std::cout << char(acceptable_chars[index]);
     }
     std::cout << "\n";

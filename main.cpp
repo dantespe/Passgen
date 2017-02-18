@@ -7,6 +7,8 @@
 #include <unistd.h>
 using namespace std;
 
+
+/////////// DEFAULTS ////////////////////
 const bool INCLUDE_NUMEBRS_DEFAULT = true;
 const bool INCLUDE_SYMBOLS_DEFAULT = true;
 const int PASSWORD_DEFAULT_LENGTH = 128;
@@ -107,7 +109,6 @@ void read_flags(int argc, char * argv[], int & count,
 }
 
 int main(int argc, char * argv[]) {
-    srand(time(0)); //Needed to generate "random" numbers
     bool numbers(INCLUDE_NUMEBRS_DEFAULT), symbols(INCLUDE_SYMBOLS_DEFAULT);
     int num_passwords_to_write(PASSWORDS_TO_WRITE);
     int password_length(PASSWORD_DEFAULT_LENGTH), flag(0);
