@@ -17,6 +17,7 @@ const string VERBOSE =
     "Usage: Passgen [count] [length]\n"
     "-b           A basic password with letters and numbers.\n"
     "-c           The number of passwords to generate.\n"
+    "-d           Hide the message from output.\n"
     "-i           Open Passgen in interactive mode.\n"
     "-l           Length of the generated password.\n"
     "-n           Include numbers in generated passwords.\n"
@@ -73,10 +74,11 @@ void interactive() {
     return;
 }
 
-void read_flags(int argc, char * argv[], int & count,
+bool read_flags(int argc, char * argv[], int & count,
     int & length, bool & numbers, bool & symbols, int & output) {
     int flag;
-    while ((flag = getopt(argc, argv, "bhinsc:l:")) != EOF) {
+    bool prompt = true;
+    while ((flag = getopt(argc, argv, "bhindsc:l:")) != EOF) {
         switch (flag) {
             case 'b':
                 numbers = true;
@@ -84,6 +86,9 @@ void read_flags(int argc, char * argv[], int & count,
                 break;
             case 'c':
                 count = atoi(optarg); break;
+            case 'd':
+                prompt = false;
+                break;
             case 'i':
                 break;
             case 'l':
@@ -103,9 +108,10 @@ void read_flags(int argc, char * argv[], int & count,
         if (flag == 'i') {
             output = flag;
             //Stop checking the flags
-            return;
+            return true;
         }
     }
+    return prompt;
 }
 
 int main(int argc, char * argv[]) {
@@ -124,14 +130,16 @@ int main(int argc, char * argv[]) {
     }
 
     //Passgen [count] [length]
-    if (argc == 3 && atoi(argv[1]) && atoi(argv[2])) {
+    if (argc == 3 && atoi(argv[1]) > 0 && atoi(argv[2]) > 0) {
         num_passwords_to_write = atoi(argv[1]);
         password_length = atoi(argv[2]);
         advanced = true;
     }
 
+    bool prompt = true;
+
     if (!advanced)
-        read_flags(argc, argv, num_passwords_to_write, password_length,
+        prompt = read_flags(argc, argv, num_passwords_to_write, password_length,
          numbers, symbols, flag);
 
     if (flag == 'i')
@@ -139,8 +147,11 @@ int main(int argc, char * argv[]) {
 
     Passgen passgen(password_length, num_passwords_to_write,
         numbers, symbols);
-    print_computation(false, num_passwords_to_write, password_length,
-        numbers, symbols);
+    if (prompt)  {
+        print_computation(false, num_passwords_to_write, password_length,
+            numbers, symbols);
+    }
+
     passgen.write_passwords();
 
     return 0;
