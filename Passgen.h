@@ -36,13 +36,16 @@ public:
     void write_passwords();
 
 private:
-
+    //A vector of all the ascii numbers in the set of chars
+    std::vector<int> acceptable_chars;
+    std::mt19937 random_gen;
+    int pass_to_write;
     int length; //length of the passwors
     bool numbers; //where it has [0-9]
     bool special_characters; //@ , ./ > etc
-    int pass_to_write;
-    //A vector of all the ascii numbers in the set of chars
-    std::vector<int> acceptable_chars;
+    bool seeded;
+
+    int get_random_int(); 
     void update_chars();
     void append_to_chars(int add);
     void write_passwords(int num_passwords);

@@ -5,11 +5,12 @@ Passgen::Passgen() {
     numbers = DEFAULT_NUMBERS;
     special_characters = DEFAULT_SPECIAL;
     pass_to_write = DEFAULT_PASS_TO_WRITE;
+    seeded = false;
 }
 
 Passgen::Passgen(int length_in, int count_in, bool numbers_in, bool spc_in) :
     length(length_in), numbers(numbers_in),
-    special_characters(spc_in), pass_to_write(count_in){
+    special_characters(spc_in), pass_to_write(count_in), seeded(false){
     if (length <= 0) length = 1;
 }
 
@@ -40,10 +41,13 @@ void Passgen::update_chars() {
    }
 }
 
-int get_random_int(int size) {
-    std::mt19937 random_gen;
-    random_gen.seed(std::random_device()());
-    std::uniform_int_distribution<std::mt19937::result_type> dist(0, size - 1);
+int Passgen::get_random_int() {
+    if (!seeded) {
+        random_gen.seed(std::random_device()());
+        seeded = true;
+    }
+
+    std::uniform_int_distribution<std::mt19937::result_type> dist(0, (int)(acceptable_chars.size() - 1));
     return int(dist(random_gen));
 }
 
@@ -53,7 +57,7 @@ void Passgen::write_passwords(int num_passwords) {
     if (num_passwords <= 0) return;
     for (int i = 0; i < length; ++i) {
         //gets a random index
-        unsigned index = get_random_int(size);
+        unsigned index = get_random_int();
         std::cout << char(acceptable_chars[index]);
     }
     std::cout << "\n";
